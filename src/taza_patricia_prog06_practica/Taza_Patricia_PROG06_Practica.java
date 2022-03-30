@@ -17,13 +17,10 @@ import javax.script.ScriptEngineManager;
 public class Taza_Patricia_PROG06_Practica {
 
     /**
-     * @param args the command line arguments
-     */
-    
-    /**
      * En esta función vamos a generar la operación matemática que será la pregunta 
      * para cada jugador 
      */
+    //METODO RANDOM
     public static String generadorOperacion (){
         int nEnteros = (int) (Math.random()* 4 + 4 ); //solo se usa una vez
         String expresion = "", signo;
@@ -80,8 +77,54 @@ public class Taza_Patricia_PROG06_Practica {
         }
         return valor;
     }
-    //FUNCION PRINCIPAL
+    /** 
+     * Esta funcion recoge el String de concursantes y a através de una funcion externa, mezclamos la
+     * matriz donde 
+     */
+    public static String aleatoriedadMatriz(String concursantes[][]){
+        
+        int listSize = concursantes.length;
+
+        // intenté seguir ahí el diagrama de flujo, pero no lograba sacar nada con ello, asi que solo 
+        //encontré la manera de lograr esto usando si o si la clase random
+        //con 3 nombres a veces termina con las mismas posiciones, mejor probar con 4 o más jugadores
+        
+        //Nota: solo me ha ocurrido 2 veces en las pruebas, pero a veces imprime en pantalla la lista randomizada y termina el programa
+        //para eso mejor reiniciar el juego, es un caso muy raro pero como me ha ocurrido mejor anotarlo
+        Random random = new Random();
+        for (int i = 0; i < listSize; i++) {
+            //seleccionamos un nombre del array
+            String currentElement = concursantes[i][0];
+            //generamos un random para saber su nueva posicion
+            int randomIndex = i + random.nextInt(listSize - i);
+            //reemplazar el nombre nuevo y asi con todos
+            concursantes[i][0] = concursantes[randomIndex][0];
+            concursantes[randomIndex][0] = currentElement;
+        }
+        return concursantes[0][0];
+    }
     
+    /**
+     * Esta función recoge el String concursantes; ahora con la puntuación actualizada, y
+     * tras hacer los bucles, selecciona quién es el ganador/a 
+     */
+    
+    public static void elegirGanador(String concursantes[][]){
+        String[][] ganador = new String [1][2]; 
+        
+        for (int x = 0; x < (concursantes.length -1); x++) { //compara todos los puntos y guardamos el ganador en un nuevo String ganador
+		if (Integer.parseInt(concursantes[x][1]) >= Integer.parseInt(concursantes[x+1][1])) {
+                    ganador[0][0] = concursantes[x][0];
+                    ganador[0][1] = concursantes[x][1];              
+                    } else {
+                        ganador[0][0] = concursantes[x+1][0];
+                        ganador[0][1] = concursantes[x+1][1];
+                        }
+        }
+            System.out.println("El ganador/a es: " + ganador[0][0] + " con " + ganador[0][1] + " puntos." );
+    }
+    
+    //FUNCION PRINCIPAL 
     public static void main(String[] args) {
         
     //Empezamos pidiendo datos 
@@ -113,27 +156,12 @@ public class Taza_Patricia_PROG06_Practica {
         }
         System.out.println("¡Perfecto! Ahora empezamos la ronda");
     //FIN RECOGIDA DE DATOS 
-        
-    //FUNCION - aletoriedad nombres
-      int listSize = concursantes.length;
-
-        // intenté seguir ahí el diagrama de flujo, pero no lograba sacar nada con ello, asi que solo 
-        //encontré la manera de lograr esto usando si o si la clase random
-        //con 3 nombres a veces termina con las mismas posiciones, mejor probar con 4 o más jugadores
-        
-        //Nota: solo me ha ocurrido 2 veces en las pruebas, pero a veces imprime en pantalla la lista randomizada y termina el programa
-        //para eso mejor reiniciar el juego, es un caso muy raro pero como me ha ocurrido mejor anotarlo
-        Random random = new Random();
-        for (int i = 0; i < listSize; i++) {
-            //seleccionamos un nombre del array
-            String currentElement = concursantes[i][0];
-            //generamos un random para saber su nueva posicion
-            int randomIndex = i + random.nextInt(listSize - i);
-            //reemplazar el nombre nuevo y asi con todos
-            concursantes[i][0] = concursantes[randomIndex][0];
-            concursantes[randomIndex][0] = currentElement;
-        }
-//    transcurso rondas
+            
+    //LLAMADA FUNCION - ALEATORIEDAD_MATRIZ
+    
+    aleatoriedadMatriz(concursantes);
+    
+    //Transcurso rondas
         for(int i = 0; i < nRondas; i++){ //un buxle para controlar las rondas
             System.out.println("Comienza la ronda " + (i +1) + "!");
 
@@ -162,17 +190,10 @@ public class Taza_Patricia_PROG06_Practica {
         }//FIN PARTIDA
         System.out.println("Fin de la partida!");
             
-        String[][] ganador = new String [1][2]; 
-        for (int x = 0; x < (concursantes.length -1); x++) { //compara todos los puntos y guardamos el ganador en un nuevo String ganador
-			if (Integer.parseInt(concursantes[x][1]) >= Integer.parseInt(concursantes[x+1][1])) {
-                            ganador[0][0] = concursantes[x][0];
-                            ganador[0][1] = concursantes[x][1];              
-                        } else {
-                            ganador[0][0] = concursantes[x+1][0];
-                            ganador[0][1] = concursantes[x+1][1];
-                        }
-        }
-            System.out.println("El ganador/a es: " + ganador[0][0] + " con " + ganador[0][1] + " puntos." );
+        //LLAMADA FUNCION ELEGIR_GANADOR
+        elegirGanador(concursantes);
+        
+        //FIN DEL PROGRAMA
             
     }
 }
